@@ -1,0 +1,298 @@
+﻿# SQL-Front 5.1  (Build 4.16)
+
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE */;
+/*!40101 SET SQL_MODE='NO_ENGINE_SUBSTITUTION' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES */;
+/*!40103 SET SQL_NOTES='ON' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS */;
+/*!40014 SET FOREIGN_KEY_CHECKS=0 */;
+
+
+# Host: 127.0.0.1    Database: agency
+# ------------------------------------------------------
+# Server version 5.6.11-log
+
+#
+# Source for table customer_trades
+#
+
+DROP TABLE IF EXISTS `customer_trades`;
+CREATE TABLE `customer_trades` (
+  `c_tradeid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `c_tradepath` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `c_tradename` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `c_childsort` int(11) DEFAULT NULL,
+  `c_rootsort` int(11) DEFAULT NULL,
+  PRIMARY KEY (`c_tradeid`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+#
+# Dumping data for table customer_trades
+#
+
+LOCK TABLES `customer_trades` WRITE;
+/*!40000 ALTER TABLE `customer_trades` DISABLE KEYS */;
+INSERT INTO `customer_trades` VALUES (2,'101','美食餐饮',0,1);
+/*!40000 ALTER TABLE `customer_trades` ENABLE KEYS */;
+UNLOCK TABLES;
+
+#
+# Source for table customer_zones
+#
+
+DROP TABLE IF EXISTS `customer_zones`;
+CREATE TABLE `customer_zones` (
+  `c_zoneid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `c_zonepath` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `c_zonename` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `c_childsort` int(11) DEFAULT NULL,
+  `c_rootsort` int(11) DEFAULT NULL,
+  `c_fullzonename` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`c_zoneid`)
+) ENGINE=InnoDB AUTO_INCREMENT=14753 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+#
+# Dumping data for table customer_zones
+#
+
+LOCK TABLES `customer_zones` WRITE;
+/*!40000 ALTER TABLE `customer_zones` DISABLE KEYS */;
+INSERT INTO `customer_zones` VALUES (13135,'3301','杭州市',1,1,'2');
+INSERT INTO `customer_zones` VALUES (13136,'330101','市辖区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13137,'330102','上城区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13144,'330103','下城区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13153,'330104','江干区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13164,'330105','拱墅区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13175,'330106','西湖区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13190,'330108','滨江区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13194,'330109','萧山区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13223,'330110','余杭区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13243,'330122','桐庐县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13257,'330127','淳安县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13281,'330182','建德市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13298,'330183','富阳市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13324,'330185','临安市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13351,'3302','宁波市',1,1,'2');
+INSERT INTO `customer_zones` VALUES (13352,'330201','市辖区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13353,'330203','海曙区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13362,'330204','江东区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13370,'330205','江北区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13379,'330206','北仑区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13389,'330211','镇海区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13396,'330212','鄞州区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13419,'330225','象山县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13438,'330226','宁海县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13457,'330281','余姚市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13479,'330282','慈溪市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13500,'330283','奉化市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13512,'3303','温州市',1,1,'2');
+INSERT INTO `customer_zones` VALUES (13513,'330301','市辖区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13514,'330302','鹿城区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13536,'330303','龙湾区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13547,'330304','瓯海区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13561,'330322','洞头县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13568,'330324','永嘉县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13607,'330326','平阳县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13639,'330327','苍南县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13676,'330328','文成县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13710,'330329','泰顺县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13747,'330381','瑞安市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13786,'330382','乐清市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13818,'3304','嘉兴市',1,1,'2');
+INSERT INTO `customer_zones` VALUES (13819,'330401','市辖区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13820,'330402','南湖区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13833,'330411','秀洲区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13842,'330421','嘉善县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13854,'330424','海盐县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13863,'330481','海宁市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13877,'330482','平湖市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13888,'330483','桐乡市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13902,'3305','湖州市',1,1,'2');
+INSERT INTO `customer_zones` VALUES (13903,'330501','市辖区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13904,'330502','吴兴区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13920,'330503','南浔区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13930,'330521','德清县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13942,'330522','长兴县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13959,'330523','安吉县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13975,'3306','绍兴市',1,1,'2');
+INSERT INTO `customer_zones` VALUES (13976,'330601','市辖区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13977,'330602','越城区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (13991,'330621','绍兴县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14011,'330624','新昌县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14028,'330681','诸暨市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14056,'330682','上虞市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14080,'330683','嵊州市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14102,'3307','金华市',1,1,'2');
+INSERT INTO `customer_zones` VALUES (14103,'330701','市辖区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14104,'330702','婺城区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14132,'330703','金东区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14144,'330723','武义县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14163,'330726','浦江县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14179,'330727','磐安县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14200,'330781','兰溪市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14216,'330782','义乌市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14230,'330783','东阳市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14249,'330784','永康市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14264,'3308','衢州市',1,1,'2');
+INSERT INTO `customer_zones` VALUES (14265,'330801','市辖区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14266,'330802','柯城区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14284,'330803','衢江区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14306,'330822','常山县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14321,'330824','开化县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14340,'330825','龙游县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14356,'330881','江山市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14378,'3309','舟山市',1,1,'2');
+INSERT INTO `customer_zones` VALUES (14379,'330901','市辖区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14380,'330902','定海区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14397,'330903','普陀区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14412,'330921','岱山县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14420,'330922','嵊泗县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14428,'3310','台州市',1,1,'2');
+INSERT INTO `customer_zones` VALUES (14429,'331001','市辖区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14430,'331002','椒江区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14441,'331003','黄岩区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14461,'331004','路桥区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14472,'331021','玉环县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14482,'331022','三门县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14497,'331023','天台县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14513,'331024','仙居县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14534,'331081','温岭市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14551,'331082','临海市',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14571,'3311','丽水市',1,1,'2');
+INSERT INTO `customer_zones` VALUES (14572,'331101','市辖区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14573,'331102','莲都区',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14592,'331121','青田县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14624,'331122','缙云县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14649,'331123','遂昌县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14670,'331124','松阳县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14691,'331125','云和县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14706,'331126','庆元县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14727,'331127','景宁畲族自治县',1,1,'3');
+INSERT INTO `customer_zones` VALUES (14752,'331181','龙泉市',1,1,'3');
+/*!40000 ALTER TABLE `customer_zones` ENABLE KEYS */;
+UNLOCK TABLES;
+
+#
+# Source for table customers
+#
+
+DROP TABLE IF EXISTS `customers`;
+CREATE TABLE `customers` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `c_add_userid` int(11) NOT NULL,
+  `c_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `c_tradepath` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_zonepath` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_address` varchar(250) COLLATE utf8_unicode_ci NOT NULL,
+  `c_postcode` varchar(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_businesslicence` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_businesslicencedate` datetime DEFAULT NULL,
+  `c_siteurl` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_registeraddress` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_registerdate` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_registermoney` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_mainoperation` varchar(3000) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_businessscope` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_mainmarket` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_corporation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_corporationid` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_dutyparagraph` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_nature` int(11) DEFAULT NULL,
+  `c_character` int(11) DEFAULT NULL,
+  `c_fromtype` int(11) DEFAULT NULL,
+  `c_keyword` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_brief` longtext COLLATE utf8_unicode_ci,
+  `c_businessmode` int(11) DEFAULT NULL,
+  `c_employeenumber` int(11) DEFAULT NULL,
+  `c_yearturnover` int(11) DEFAULT NULL,
+  `c_sourceurl` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_createtime` datetime DEFAULT NULL,
+  `c_status` int(11) DEFAULT NULL,
+  `c_icp` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_remark` longtext COLLATE utf8_unicode_ci,
+  `c_contact` varchar(80) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_phone` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `c_mobile` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+#
+# Dumping data for table customers
+#
+
+LOCK TABLES `customers` WRITE;
+/*!40000 ALTER TABLE `customers` DISABLE KEYS */;
+INSERT INTO `customers` VALUES (1,2,'杭州铭来网络科技有限公司','101','330101','浙江省杭州市西湖区天目山路15号宏丰家居城','222222','','0000-00-00 00:00:00','','浙江省杭州市西湖区天目山路15号宏丰家居城','','','','','','','','',0,1,0,NULL,'',1,1,1,'','2014-08-22 11:58:45',4,'','','沈桂波','111111111','11111111111111111111');
+INSERT INTO `customers` VALUES (2,2,'杭州先行科技有限公司杭州先行科技有限公司','101','330205','浙江省杭州市西湖区天目山路15号宏丰家居城','','','0000-00-00 00:00:00','','','','','','','','','','',0,1,0,NULL,'',1,1,1,'','2014-08-26 11:58:40',4,'','','沈桂波','11111111111','11111111111111111111');
+INSERT INTO `customers` VALUES (3,2,'杭州先行科技有限公司','101','330203','1111111','222222','','0000-00-00 00:00:00','','','','','','','','','','',0,1,0,NULL,'',1,1,1,'','2014-08-26 11:33:57',4,'',NULL,'沈桂波','111111111111','11111111111111111111');
+INSERT INTO `customers` VALUES (4,2,'杭州铭来网络科技有限公司','101','330203','浙江省杭州市西湖区天目山路15号宏丰家居城','','','0000-00-00 00:00:00','','','','','','','','','','',0,1,0,NULL,'',1,1,1,'','2014-08-26 11:36:21',0,'',NULL,'沈桂波','111111111111','11111111111111111111');
+INSERT INTO `customers` VALUES (5,2,'杭州铭来网络科技有限公司','101','330203','浙江省杭州市西湖区天目山路15号宏丰家居城','','','0000-00-00 00:00:00','','','','','','','','','','',0,1,0,NULL,'',1,1,1,'','2014-08-26 11:45:05',4,'',NULL,'沈桂波','111111111','');
+INSERT INTO `customers` VALUES (6,2,'杭州先行科技有限公司','101','330203','浙江省杭州市西湖区天目山路15号宏丰家居城','','','0000-00-00 00:00:00','','','','','','','','','','',0,1,0,NULL,'',1,1,1,'','2014-08-26 12:12:05',4,'',NULL,'沈桂波','111111111111','');
+/*!40000 ALTER TABLE `customers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+#
+# Source for table migrations
+#
+
+DROP TABLE IF EXISTS `migrations`;
+CREATE TABLE `migrations` (
+  `migration` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+#
+# Dumping data for table migrations
+#
+
+LOCK TABLES `migrations` WRITE;
+/*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
+INSERT INTO `migrations` VALUES ('2014_08_19_070700_create_users_table',1);
+INSERT INTO `migrations` VALUES ('2014_08_19_090233_create_customers_table',1);
+INSERT INTO `migrations` VALUES ('2014_08_20_055413_create_customer_trades_table',1);
+INSERT INTO `migrations` VALUES ('2014_08_21_005941_create_customer_zones_table',1);
+/*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+#
+# Source for table users
+#
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `contact` varchar(80) COLLATE utf8_unicode_ci NOT NULL,
+  `phone` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `mobile` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `c_num` int(11) NOT NULL,
+  `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+#
+# Dumping data for table users
+#
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (2,'roy','$2y$10$Cp8ahEED7NpHOr7.vhSiIeObnWY8ksr7n/MnQPQmvFrAbWQln4s/q','杭州先行科技有限公司','123456789','123456789','123456789',1,'dMWGLOJhobpsMfqChnbQdJnJ75GxvHdu1S4tQVFNwmanz2X5qlx0Pfsz9aQx');
+INSERT INTO `users` VALUES (7,'xxkj','$2y$10$1W/acwPek.8A1TVJ6aVosOmJ3ve6pB.gcB4ctk00AzWcR79SpASDq','杭州先行科技有限公司','99999999','99999999','99999999',1,'DWI9UULwkPl8ve5xjfrphrBtl92pLiBmXSY7GnRAxh6JYkD1dTcEynLCKKPj');
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+#
+# Source for view view_customers
+#
+
+DROP VIEW IF EXISTS `view_customers`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_customers` AS select `c`.`c_mobile` AS `c_mobile`,`c`.`c_phone` AS `c_phone`,`c`.`c_contact` AS `c_contact`,`c`.`c_remark` AS `c_remark`,`c`.`c_icp` AS `c_icp`,`c`.`c_status` AS `c_status`,`c`.`c_createtime` AS `c_createtime`,`c`.`c_sourceurl` AS `c_sourceurl`,`c`.`c_yearturnover` AS `c_yearturnover`,`c`.`c_employeenumber` AS `c_employeenumber`,`c`.`c_businessmode` AS `c_businessmode`,`c`.`c_brief` AS `c_brief`,`c`.`c_keyword` AS `c_keyword`,`c`.`c_fromtype` AS `c_fromtype`,`c`.`c_character` AS `c_character`,`c`.`c_nature` AS `c_nature`,`c`.`c_dutyparagraph` AS `c_dutyparagraph`,`c`.`c_corporationid` AS `c_corporationid`,`c`.`c_corporation` AS `c_corporation`,`c`.`c_mainmarket` AS `c_mainmarket`,`c`.`c_businessscope` AS `c_businessscope`,`c`.`c_mainoperation` AS `c_mainoperation`,`c`.`c_registermoney` AS `c_registermoney`,`c`.`c_registerdate` AS `c_registerdate`,`c`.`c_registeraddress` AS `c_registeraddress`,`c`.`c_siteurl` AS `c_siteurl`,`c`.`c_businesslicencedate` AS `c_businesslicencedate`,`c`.`c_businesslicence` AS `c_businesslicence`,`c`.`id` AS `id`,`c`.`c_add_userid` AS `c_add_userid`,`c`.`c_name` AS `c_name`,`c`.`c_tradepath` AS `c_tradepath`,`c`.`c_zonepath` AS `c_zonepath`,`c`.`c_address` AS `c_address`,`c`.`c_postcode` AS `c_postcode`,`ct`.`c_tradename` AS `c_tradename`,`cz1`.`c_zonename` AS `city`,`cz2`.`c_zonename` AS `area`,`users`.`name` AS `name`,`users`.`contact` AS `contact`,`users`.`phone` AS `phone`,`users`.`mobile` AS `mobile` from ((((`customers` `c` left join `customer_trades` `ct` on((`c`.`c_tradepath` = `c`.`c_tradepath`))) left join `customer_zones` `cz1` on((left(`c`.`c_zonepath`,4) = `cz1`.`c_zonepath`))) left join `customer_zones` `cz2` on((`c`.`c_zonepath` = `cz2`.`c_zonepath`))) join `users` on((`c`.`c_add_userid` = `users`.`id`)));
+
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

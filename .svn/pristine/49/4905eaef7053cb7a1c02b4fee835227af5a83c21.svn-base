@@ -1,0 +1,75 @@
+<?php
+
+if (!defined('BASEPATH'))
+	exit('No direct script access allowed');
+
+class MY_Controller extends CI_Controller {
+	public function __construct() {
+		parent::__construct();
+		$this->load->driver('cache');
+		$this->load->model('loader_model');
+		define('PATH_INFO', isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : "/");
+		define('HTTP_REFERER', isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "");
+		define('STATIC_URL', '/statics');
+		
+		$this->system_status = $this->get_system_status();
+		$this->system_zones = $this->get_customer_zones();
+		$this->system_trades = $this->get_customer_trades();
+		$this->guid = rand(1000, 9999);
+	}
+
+	public function get_system_status($key = FALSE) {
+		return $this->loader_model->load_system_status();
+		$_system_status = $this->cache->memcached->get('system_status');
+		if (!isset($_system_status) OR is_null($_system_status) OR $_system_status == FALSE){
+			$_system_status = $this->loader_model->load_system_status();
+			@$this->cache->memcached->save('system_status',$_system_status, 14400);
+		}
+		if ($key == FALSE)
+			return $_system_status;
+		else
+			return $_system_status[$key];
+	}
+
+	public function get_customer_zones($key = FALSE) {
+		@$_system_zones = $this->cache->memcached->get('system_zones');
+		if (!isset($_system_zones) OR is_null($_system_zones) OR $_system_zones == FALSE){
+			$_system_zones = $this->loader_model->load_system_zones();
+			$r = $this->cache->memcached->save('system_zones',$_system_zones, 0);
+		}
+		if ($key == FALSE)
+			return $_system_zones;
+		else
+			return isset($_system_zones[$key]) ? $_system_zones[$key] : FALSE;
+	}
+
+	public function get_customer_trades($key = FALSE) {
+		@$_system_trades = $this->cache->memcached->get('system_trades');
+		if (!isset($_system_trades) OR is_null($_system_trades) OR $_system_trades == FALSE){
+			$_system_trades = $this->loader_model->load_system_trades();
+			$this->cache->memcached->save('system_trades',$_system_trades, 0);
+		}
+		if ($key == FALSE)
+			return $_system_trades;
+		else
+			return isset($_system_trades[$key]) ? $_system_trades[$key] : FALSE;
+	}
+
+	public function show_iframe($content, $data = FALSE, $return = FALSE) {
+		$this->load->library('session');
+		if ($data === FALSE) {
+			$data["name"] = $this->session->userdata("name") ?: "";
+			$data['content'] = $content;
+			$this->load->view("master_view.php", $data);
+		} else {
+			if ($return)
+				return $this->load->view($content, $data, $return);
+			else
+				$this->load->view($content, $data);
+		}
+	}
+}
+
+
+/* End of file MY_Controller.php */
+/* Location: ./application/core/MY_Controller.php */
