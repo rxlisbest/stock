@@ -43,6 +43,77 @@ class MY_Controller extends CI_Controller {
 		echo json_encode($data);
 		exit;
 	}
+	
+	public function pagination($page, $rows, $per_page){
+		$get = $this->input->get();
+		$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+		$pages = ceil($rows/$per_page);
+		$html = ''; 
+		$html .= '<div class="widget-body">';
+		$html .= '<div class="pagination no-margin">';
+		$html .= '<ul>';
+
+		if($page > 1){
+		    $get['page'] = $page - 1;
+		    $query_string = $this->query_string($get);
+    
+		    $html .= '<li>';
+		    $html .= '<a href="'.$url.'?'.$query_string.'">';
+		}
+		else{
+		    $html .= '<li class="disabled">';
+		    $html .= '<a>';
+		}
+		$html .= '上一页';
+		$html .= '</a>';
+		$html .= '</li>';
+		
+		for($i=1;$i<=$pages;$i++){
+		    if($i==$page){
+			$html .= '<li class="active">';
+		    }
+		    elseif(abs($page-$i)>1){
+			$html .= '<li class="hidden-phone">';
+		    }
+		    else{
+			$html .= '<li>';
+		    }
+		    $get['page'] = $i;
+		    $query_string = $this->query_string($get);
+
+		    $html .= '<a href="'.$url.'?'.$query_string.'">';
+		    $html .= $i;
+		    $html .= '</a>';
+		    $html .= '</li>';
+		}
+		if($page < $pages){
+		    $get['page'] = $page + 1;
+		    $query_string = $this->query_string($get);
+
+		    $html .= '<li>';
+		    $html .= '<a href="'.$url.'?'.$query_string.'">';
+		}
+		else{
+		    $html .= '<li class="disabled">';
+		    $html .= '<a>';
+		}
+		$html .= '下一页';
+		$html .= '</a>';
+		$html .= '</li>';
+
+		$html .= '</ul>';
+		$html .= '</div>';
+		$html .= '</div>';
+		return $html;
+	}
+	
+	public function query_string($get){
+	    $data = array();
+	    foreach($get as $key => $value){
+		$data[] = $key.'='.$value;
+	    }
+	    return implode('&', $data);
+	}
 }
 
 

@@ -18,6 +18,13 @@ class customer_model extends CI_model {
 			$this->db->where($arr["where"], "", FALSE);
 		if(isset($arr["like"]))
 			$this->db->like($arr["like"], "", FALSE);
+		if(isset($arr["limit"]) && isset($arr["offset"]))
+			$this->db->limit($arr["limit"], $arr['offset']);
+		if(isset($arr["order"])){
+		    foreach($arr['order'] as $key => $value){
+			$this->db->order_by($key, $value);
+		    }
+		}
 		$query = $this->db->get();
 		$data = $query->result();
 		$query->free_result();

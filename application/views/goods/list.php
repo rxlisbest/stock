@@ -15,7 +15,7 @@
                 <div class="widget-body">
                     <?php echo form_open('/goods', array('class'=>'form-horizontal no-margin', 'method'=>'get')); ?>
                             货物名称:
-                            <?php echo form_input(array('name'=>'name', 'value'=>$search["name"] ?: "", 'class'=>'span3', 'type'=>'text', 'placeholder'=>'货物名称')); ?>
+                            <?php echo form_input(array('name'=>'name', 'value'=>isset($search["name"]) ? $search["name"]: "", 'class'=>'span3', 'type'=>'text', 'placeholder'=>'货物名称')); ?>
                             <button type="submit" class="btn btn-info">
                                 查询
                             </button>
@@ -153,6 +153,7 @@
                     }    
                 </SCRIPT>    
             </div>
+	    <?php echo $pagination;?>
         </div>
     </div>
 

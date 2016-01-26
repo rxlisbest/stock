@@ -13,12 +13,10 @@
           </span>
         </div>
         <div class="widget-body">
-          <?php echo form_open('/customer', array('class'=>'form-horizontal no-margin')); ?>
+          <?php echo form_open('/customer', array('class'=>'form-horizontal no-margin', 'method'=>'get')); ?>
                     
               客户名称:
-              <?php echo form_input(array('name'=>'c_name', 'value'=>$search["c_name"] ?: "", 'class'=>'span3', 'type'=>'text', 'placeholder'=>'公司名称')); ?>
-              客户状态:
-              <?php echo form_dropdown('c_status', $customers_config["Customers_Status"], $search["c_status"] ?: "", 'class="span3 input-left-top-margins"'); ?>
+              <?php echo form_input(array('name'=>'c_name', 'value'=>isset($search["c_name"])? $search["c_name"]: "", 'class'=>'span3', 'type'=>'text', 'placeholder'=>'公司名称')); ?>
               <button type="submit" class="btn btn-info">
                 查询
               </button>
@@ -41,14 +39,6 @@
         </span>
       </div>
       <div class="widget-body">
-
-        <div class="control-group">
-          <div class="controls controls-row">
-              <font color="red">
-                <?php echo $message; ?>
-              </font>
-          </div>
-        </div>
 
       <table class="table table-condensed table-striped table-bordered table-hover no-margin">
         <thead>
@@ -90,15 +80,10 @@
               </a>
             </td>
             <td class="hidden-phone">
-              <?php echo $customer_zones[substr($customer->c_zonepath, 0, 4)].'-'.$customer_zones[$customer->c_zonepath]; ?>
             </td>
             <td class="hidden-phone">
-              <?php echo $customer_trades[$customer->c_tradepath]; ?>
             </td>
             <td>
-              <span class="<?php echo $customers_config['Customers_Status_Style'][$customer->c_status]; ?>">
-                <?php echo $customers_config['Customers_Status'][$customer->c_status]; ?>
-              </span>
             </td>
             <td class="hidden-phone">
               <?php echo $customer->c_createtime ?>
@@ -169,6 +154,7 @@
           }  
         </SCRIPT>  
       </div>
+	    <?php echo $pagination;?>
     </div>
   </div>
 

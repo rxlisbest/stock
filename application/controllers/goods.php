@@ -30,20 +30,25 @@ class goods extends MY_Controller {
 			redirect("/login?from_url=${url}");
 	}
 
-	public function index()
+	public function index($page=1)
 	{	
 		$get = $this->input->get();
+		$page = isset($get['page']) ? $get['page']: 1;
 		$arr = array();
-		//var_dump($this->cache->memcached->get('system_zones'));
+		$per_page = 1;
+		$arr['offset'] = ($page - 1)*$per_page;
+		$arr['limit'] = $per_page;
 		if(isset($get["name"]))
 			$arr["like"]["name"] = trim($get["name"]); 
 
-		// $arr["where"]["c_add_userid"] = $this->session->userdata('id');
-		// $arr["where"]["c_status<>"] = 3; 
 		$data["goods"] = $this->goods_model->get_list($arr);
+		$rows = $this->goods_model->get_count($arr);
 
 		$data["search"] = $get;
-
+		
+		// $url = "/goods/index/";
+		$pagination = $this->pagination($page, $rows, $per_page);
+		$data["pagination"] = $pagination;
 		$data["message"] = $this->session->flashdata('message') ?: "";
 		$content = $this->load->view("goods/list", $data, true);
 		$this->show_iframe($content);
@@ -135,20 +140,23 @@ class goods extends MY_Controller {
 		$post = $this->input->post();
 		if($post){
 			if(!$post["quantity"]){
-				$this->session->set_flashdata('message', '<font color="red">入库货物重量不能为空!</font>');
-				redirect("/goods/in");
+				$this->sendError('入库货物重量不能为空');
+				// $this->session->set_flashdata('message', '<font color="red">入库货物重量不能为空!</font>');
+				// redirect("/goods/in");
 			}
 
 			$data["goods"] = $goods = $this->goods_model->get_info(array("where"=>array("id"=>$id)));
 			$post["quantity"] += $goods->quantity;
 			
 			if($this->goods_model->edit($id,$post)){
-				$this->session->set_flashdata('message', '<font color="red">入库成功!</font>');
-				redirect("/goods");
+				$this->sendSuccess();
+				// $this->session->set_flashdata('message', '<font color="red">入库成功!</font>');
+				// redirect("/goods");
 			}
 			else{
-				$this->session->set_flashdata('message', '<font color="red">入库失败!</font>');
-				redirect("/goods");
+				$this->sendError('入库失败');
+				// $this->session->set_flashdata('message', '<font color="red">入库失败!</font>');
+				// redirect("/goods");
 			}
 		}
 		else{
@@ -190,16 +198,11 @@ class goods extends MY_Controller {
 		}
 	}
 
-	public function detail($id=0){
-		$data["customer_trades"] = $this->system_trades;
-		$data["customer_zones"] = $this->system_zones;
-		$data["city"] = $this->_getCity();
-		$data["county"] = $this->_getCounty();
-
-		$data["customers_config"] = $this->config->item("customers");
-		$data["customer"] = $this->customer_model->get_info(array("where"=>array("id"=>$id)));
-		$data["message"] = $this->session->flashdata('message') ?: "";
-		$content = $this->load->view("customer/customer_detail_view", $data, true);
+	public function cart(){
+		$arr = array();
+		$data = array();
+		$data["goods"] = $this->goods_model->get_list($arr);
+		$content = $this->load->view("goods/cart", $data, true);
 		$this->show_iframe($content);
 	}
 }

@@ -29,37 +29,30 @@ class customer extends MY_Controller {
 
 	public function index()
 	{	
-		$post = $this->input->post();
+		$get = $this->input->get();
+		$page = isset($get['page']) ? $get['page']: 1;
+		$arr = array();
+		$per_page = 10;
+		$arr['offset'] = ($page - 1)*$per_page;
+		$arr['limit'] = $per_page;
 
-		//var_dump($this->cache->memcached->get('system_zones'));
-		if(isset($post["c_status"]))
-			$arr["where"]["c_status"] = $post["c_status"]; 
-		if(isset($post["c_name"]))
-			$arr["like"]["c_name"] = $post["c_name"]; 
+		if(isset($get["c_name"]))
+			$arr["like"]["c_name"] = trim($get["c_name"]); 
 
-		$arr["where"]["c_add_userid"] = $this->session->userdata('id');
-		$arr["where"]["c_status<>"] = 3; 
+		$arr['order'] = array('id'=>'DESC');
 		$data["customers"] = $this->customer_model->get_list($arr);
-		$data["customer_zones"] = $this->system_zones;
-		$data["customer_trades"] = $this->system_trades;
+		$rows = $this->customer_model->get_count($arr);
 
-		$this->config->load('customers');
-		$data["customers_config"] = $this->config->item("customers");
-		$data["search"] = $post;
+		$pagination = $this->pagination($page, $rows, $per_page);
+		$data["pagination"] = $pagination;
 
-		$data["message"] = $this->session->flashdata('message') ?: "";
+		$data["search"] = $get;
+
 		$content = $this->load->view("customer/customer_list_view", $data, true);
 		$this->show_iframe($content);
 	}
 
 	public function add(){
-		$data["customer_trades"] = $this->system_trades;
-		$data["customer_zones"] = $this->system_zones;
-		$data["city"] = $this->_getCity();
-		$data["county"] = $this->_getCounty();
-
-		$data["customers_config"] = $this->config->item("customers");
-		$data["message"] = $this->session->flashdata('message') ?: "";
 		$data["post"] = $this->session->flashdata('post') ?: "";
 
 		$content = $this->load->view("customer/customer_add_view", $data, true);
@@ -68,82 +61,39 @@ class customer extends MY_Controller {
 
 	public function add_save(){
 		$post = $this->input->post();
-		$this->session->set_flashdata('post', $post);
-		if(!$post["c_name"] OR !$post["c_address"] OR !$post["area"]){
-			$this->session->set_flashdata('message', '<font color="red">必填项不能为空!</font>');
-			redirect("/customer/add");
+		if(!$post["c_name"]){
+			$this->sendError('客户名称不能为空');
 		}
 
-		if(!$this->_getProtectNumberCheck() && !$post['c_status']){
-			$this->session->set_flashdata('message', '<font color="red">保护客户数量己达到限制数量,不能继续报备!</font>');
-			redirect("/customer/add");
-		}
-		$post["c_zonepath"] = $post["area"];
-		unset($post["city"]);
-		unset($post["area"]);
-
-		if(isset($post['c_status']) && !$post['c_status'])
-			$post["c_status"] = 0;
-		else
-			$post["c_status"] = 5;
 		$post["c_createtime"] = date("Y-m-d H:i:s");
-		$post["c_add_userid"] = $this->session->userdata("id");
 		if($this->customer_model->add($post)){
-			$this->session->set_flashdata('message', '<font color="red">添加客户成功!</font>');
-			redirect("/customer");
+			$this->sendSuccess();
 		}
 		else{
-			$this->session->set_flashdata('message', '<font color="red">添加客户失败!</font>');
-			redirect("/customer");
+			$this->sendError('添加客户失败');
 		}
 	}
 
 	public function edit($id=0){
-		$data["customer_trades"] = $this->system_trades;
-		$data["customer_zones"] = $this->system_zones;
-		$data["city"] = $this->_getCity();
-		$data["county"] = $this->_getCounty();
-
-		$data["customers_config"] = $this->config->item("customers");
 		$data["customer"] = $this->customer_model->get_info(array("where"=>array("id"=>$id)));
-		$data["message"] = $this->session->flashdata('message') ?: "";
 		$content = $this->load->view("customer/customer_edit_view", $data, true);
 		$this->show_iframe($content);
 	}
 
 	public function edit_save($id=0){
 		$post = $this->input->post();
-		if(!$post["c_name"] OR !$post["c_address"] OR !$post["area"]){
-			$this->session->set_flashdata('message', '<font color="red">必填项不能为空!</font>');
-			redirect("/customer/edit/".$id);
+		if(!$post["c_name"]){
+			$this->sendError('客户名称不能为空');
 		}
 		$arr["where"]["id<>"] = $id;
-		if(!$this->_getProtectNumberCheck($arr) && !$post['c_status']){
-			$this->session->set_flashdata('message', '<font color="red">保护客户数量己达到限制数量,不能继续报备!</font>');
-			redirect("/customer/edit/".$id);
-		}
 		$data["customer"] = $customer = $this->customer_model->get_info(array("where"=>array("id"=>$id)));
 		
-		/*保护客户和申请取消客户不能修改公司名称*/
-		if(in_array($customer->c_status, array(1, 4)))
-			unset($post["c_name"]);
-		$post["c_zonepath"] = $post["area"];
-		unset($post["city"]);
-		unset($post["area"]);
-
-		if(isset($post['c_status']) && !$post['c_status'])
-			$post["c_status"] = 0;
-		else
-			unset($post["c_status"]);
 		$post["c_createtime"] = date("Y-m-d H:i:s");
-		$post["c_add_userid"] = $this->session->userdata("id");
 		if($this->customer_model->edit($id,$post)){
-			$this->session->set_flashdata('message', '<font color="red">修改客户成功!</font>');
-			redirect("/customer");
+			$this->sendSuccess();
 		}
 		else{
-			$this->session->set_flashdata('message', '<font color="red">修改客户失败!</font>');
-			redirect("/customer");
+			$this->sendError('修改客户失败');
 		}
 	}
 
