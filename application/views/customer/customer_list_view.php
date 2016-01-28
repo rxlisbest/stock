@@ -50,13 +50,7 @@
               客户名称
             </th>
             <th style="width:15%" class="hidden-phone">
-              地区
-            </th>
-            <th style="width:20%" class="hidden-phone">
-              行业
-            </th>
-            <th style="width:10%">
-              状态
+              电话 
             </th>
             <th style="width:25%" class="hidden-phone">
               添加时间
@@ -80,10 +74,7 @@
               </a>
             </td>
             <td class="hidden-phone">
-            </td>
-            <td class="hidden-phone">
-            </td>
-            <td>
+              <?php echo $customer->c_mobile; ?>
             </td>
             <td class="hidden-phone">
               <?php echo $customer->c_createtime ?>
@@ -92,7 +83,7 @@
               
               <div class="btn-group">
                 <button data-toggle="dropdown" class="btn btn-mini dropdown-toggle">
-                  Action 
+		    操作
                   <span class="caret">
                   </span>
                 </button>
@@ -107,23 +98,14 @@
                       修改客户
                     </a>
                   </li>
-                <?php if(in_array($customer->c_status, array(2, 3, 5))): ?>
-                  <li>
-                    <a href="/customer/apply/<?php echo $customer->id; ?>">
-                      申请保护
-                    </a>
-                  </li>
-                <?php endif; ?>
-                <?php if(in_array($customer->c_status, array(0, 1))): ?>
-                  <li>
-                    <a href="/customer/cancel/<?php echo $customer->id; ?>" onclick="javascript:return p_can()">
-                      取消保护
-                    </a>
-                  </li>
-                <?php endif; ?>
                   <li>
                     <a href="/customer/delete/<?php echo $customer->id; ?>" onclick="javascript:return p_del()">
                       删除客户
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/goods/out/<?php echo $customer->id; ?>">
+			出库
                     </a>
                   </li>
                 </ul>

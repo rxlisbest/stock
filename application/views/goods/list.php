@@ -42,7 +42,7 @@
                 <div class="control-group">
                     <div class="controls controls-row">
                             <font color="red">
-                                <?php echo $message; ?>
+                                <?php // echo $message; ?>
                             </font>
                     </div>
                 </div>
@@ -104,12 +104,6 @@
                                     </li>
 
                                     <li>
-                                        <a href="/goods/out/<?php echo $item->id; ?>">
-                                            出库
-                                        </a>
-                                    </li>
-
-                                    <li>
                                         <a href="/goods/in/<?php echo $item->id; ?>">
                                             入库
                                         </a>
@@ -121,7 +115,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="/goods/delete/<?php echo $item->id; ?>" onclick="javascript:return p_del()">
+                                        <a onclick="javascript:return p_del(<?php echo $item->id; ?>)">
                                             删除
                                         </a>
                                     </li>
@@ -135,10 +129,33 @@
             </table>
 
                 <SCRIPT LANGUAGE=javascript>     
-                    function p_del() {     
+                    function p_del(id) {     
                         var msg = "确认要删除此客户吗?";     
                         if (confirm(msg)==true){     
-                            return true;     
+			    loading();
+			    $.ajax({
+				type: "GET",
+				url: "/goods/del/" + id,
+				// data: {id:id},
+				dataType: "json",
+				success: function(data){
+				    if(data.code == 300){
+					    loaded();
+					    $().toastmessage('showErrorToast', data.msg);
+					    // TINY.box.show({html:data.msg,animate:false,close:false,boxid:'error',top:5});
+					    // gDialog.error('提示信息', data.errormsg);
+				    }
+				    else{
+					    // window.location.href = "/goods";
+					    window.location.reload();
+				    }
+				},
+				error: function(){
+				    loaded();
+				    $().toastmessage('showErrorToast', "网络错误");
+				}
+			    });
+                            return false;     
                         }else{     
                             return false;     
                         }     

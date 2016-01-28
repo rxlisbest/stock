@@ -21,6 +21,7 @@ class goods extends MY_Controller {
 		parent::__construct();
 		$this->load->library('session');
 		$this->load->model("goods_model");
+		$this->load->model("customer_model");
 		$this->load->helper('url');
 		$this->load->helper('form');
 
@@ -35,7 +36,7 @@ class goods extends MY_Controller {
 		$get = $this->input->get();
 		$page = isset($get['page']) ? $get['page']: 1;
 		$arr = array();
-		$per_page = 1;
+		$per_page = 10;
 		$arr['offset'] = ($page - 1)*$per_page;
 		$arr['limit'] = $per_page;
 		if(isset($get["name"]))
@@ -49,7 +50,7 @@ class goods extends MY_Controller {
 		// $url = "/goods/index/";
 		$pagination = $this->pagination($page, $rows, $per_page);
 		$data["pagination"] = $pagination;
-		$data["message"] = $this->session->flashdata('message') ?: "";
+		// $data["message"] = $this->session->flashdata('message') ?: "";
 		$content = $this->load->view("goods/list", $data, true);
 		$this->show_iframe($content);
 	}
@@ -82,7 +83,7 @@ class goods extends MY_Controller {
 		}
 
 		$arr = array();
-		$arr["like"]["name"] = trim($post["name"]); 
+		$arr["where"]["name"] = trim($post["name"]); 
 		$goods_count = $this->goods_model->get_count($arr);
 		if($goods_count > 0){
 			$this->sendError('已存在这种货物,请不要重复添加!');
@@ -120,6 +121,12 @@ class goods extends MY_Controller {
 			$this->sendError('单价不能为空');
 			// $this->session->set_flashdata('message', '<font color="red">单价不能为空!</font>');
 			// redirect("/goods/edit/".$id);
+		}
+		
+		// 查看是否存在重复
+		$count = $this->goods_model->get_count(array("where"=>array("id<>"=>$id, "name"=>"'{$post['name']}'")));
+		if($count > 0){
+			$this->sendError('已存在货物');
 		}
 
 		$data["goods"] = $goods = $this->goods_model->get_info(array("where"=>array("id"=>$id)));
@@ -167,43 +174,72 @@ class goods extends MY_Controller {
 		}
 	}
 
-	public function out($id=0){
+	public function out($c_id=0){
 		$post = $this->input->post();
-		if($post){
-			if(!$post["quantity"]){
-				$this->session->set_flashdata('message', '<font color="red">出库货物重量不能为空!</font>');
-				redirect("/goods/out");
-			}
+		$get = $this->input->get();
+		$page = isset($get['page']) ? $get['page']: 1;
+		$arr = array();
+		$per_page = 5;
+		$arr['offset'] = ($page - 1)*$per_page;
+		$arr['limit'] = $per_page;
+		if(isset($get["name"]))
+			$arr["like"]["name"] = trim($get["name"]); 
 
-			$data["goods"] = $goods = $this->goods_model->get_info(array("where"=>array("id"=>$id)));
-			$post["quantity"] += $goods->quantity;
-			if($post["quantity"] < 0){
-				$this->session->set_flashdata('message', '<font color="red">出库货物重量不能大于现有库存!</font>');
-				redirect("/goods/out");
-			}
-			if($this->goods_model->edit($id,$post)){
-				$this->session->set_flashdata('message', '<font color="red">出库成功!</font>');
-				redirect("/goods");
-			}
-			else{
-				$this->session->set_flashdata('message', '<font color="red">出库失败!</font>');
-				redirect("/goods");
-			}
+		$data["goods"] = $this->goods_model->get_list($arr);
+		$rows = $this->goods_model->get_count($arr);
+
+		$data["search"] = $get;
+		
+		// $url = "/goods/index/";
+		$pagination = $this->pagination($page, $rows, $per_page);
+		$data["pagination"] = $pagination;
+
+		$data["customer"] = $this->customer_model->get_info(array("where"=>array("id"=>$c_id)));
+		$data["cart"] = $cart = $this->session->userdata($c_id);
+		$total_money = 0.00;
+		foreach($cart?:array() as $key=>$item){
+		    $total_money = ($total_money*100 + $item['price']*$item['quantity']*100)/100;
 		}
-		else{
-			$data["goods"] = $this->goods_model->get_info(array("where"=>array("id"=>$id)));
-			$data["message"] = $this->session->flashdata('message') ?: "";
-			$content = $this->load->view("goods/out", $data, true);
-			$this->show_iframe($content);
-		}
+		$data['total_money'] = sprintf("%.2f", $total_money);
+		// var_dump($data["cart"]);exit;
+		$content = $this->load->view("goods/out", $data, true);
+		$this->show_iframe($content);
 	}
 
-	public function cart(){
-		$arr = array();
-		$data = array();
-		$data["goods"] = $this->goods_model->get_list($arr);
-		$content = $this->load->view("goods/cart", $data, true);
-		$this->show_iframe($content);
+	public function cart($c_id){
+		$post = $this->input->post();
+		$data = $this->session->userdata($c_id);
+		if(!$data){
+		    $data = array();
+		}
+		$data[] = array(
+				'id' => $post['id'],
+				'name' => $post['name'],
+				'price' => $post['price'],
+				'quantity' => $post['quantity'],
+			    );
+		$this->session->set_userdata($c_id, $data);
+		$this->sendSuccess();
+	}
+
+	public function delcart($c_id){
+		$post = $this->input->post();
+		$data = $this->session->userdata($c_id);
+		unset($data[$post['id']]);
+		// var_dump($data);exit;
+		$this->session->unset_userdata($c_id);
+		$this->session->set_userdata($c_id, $data);
+		// $this->session->set_userdata($c_id, $data);
+		$this->sendSuccess();
+	}
+
+	public function del($id){
+		if($this->goods_model->delete($id)){
+			$this->sendSuccess();
+		}
+		else{
+			$this->sendError('修改货物失败');
+		}
 	}
 }
 

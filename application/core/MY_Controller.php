@@ -47,6 +47,7 @@ class MY_Controller extends CI_Controller {
 	public function pagination($page, $rows, $per_page){
 		$get = $this->input->get();
 		$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+		$url = str_replace("index.php/", "", $url);
 		$pages = ceil($rows/$per_page);
 		$html = ''; 
 		$html .= '<div class="widget-body">';

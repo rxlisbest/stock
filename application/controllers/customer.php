@@ -23,8 +23,11 @@ class customer extends MY_Controller {
 		$this->load->model("customer_model");
 		$this->load->helper('url');
 		$this->load->helper('form');
+
+		$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
+		$url = base64_encode($url);
 		if(!$this->session->userdata("islogin"))
-			redirect("/login");
+			redirect("/login?from_url=${url}");
 	}
 
 	public function index()
@@ -65,6 +68,13 @@ class customer extends MY_Controller {
 			$this->sendError('客户名称不能为空');
 		}
 
+		$arr = array();
+		$arr["where"]["c_name"] = "'".trim($post["c_name"])."'"; 
+		$customer_count = $this->customer_model->get_count($arr);
+		if($customer_count > 0){
+			$this->sendError('已存在这个客户,请不要重复添加!');
+		}
+
 		$post["c_createtime"] = date("Y-m-d H:i:s");
 		if($this->customer_model->add($post)){
 			$this->sendSuccess();
@@ -84,6 +94,12 @@ class customer extends MY_Controller {
 		$post = $this->input->post();
 		if(!$post["c_name"]){
 			$this->sendError('客户名称不能为空');
+		}
+
+		// 查看是否存在重复
+		$count = $this->customer_model->get_count(array("where"=>array("id<>"=>$id, "c_name"=>"'{$post['c_name']}'")));
+		if($count > 0){
+			$this->sendError('已存在这个客户');
 		}
 		$arr["where"]["id<>"] = $id;
 		$data["customer"] = $customer = $this->customer_model->get_info(array("where"=>array("id"=>$id)));
@@ -123,89 +139,6 @@ class customer extends MY_Controller {
 		else
 			$this->session->set_flashdata('message', '<font color="red">删除客户失败!</font>');
 		redirect("/customer");
-	}
-
-	public function cancel($id){
-		$data["customer"] = $customer = $this->customer_model->get_info(array("where"=>array("id"=>$id)));
-		if(!$customer->c_status){
-			$arr["c_status"] = 5;
-			$message = "取消保护客户申请成功";
-		}
-		else{
-			$message = "申请取消保护客户成功";
-			$arr["c_status"] = 4;
-		}
-		if($this->customer_model->edit($id, $arr))
-			$this->session->set_flashdata('message', '<font color="red">'.$message.'!</font>');
-		else
-			$this->session->set_flashdata('message', '<font color="red">申请取消保护客户失败!</font>');
-		redirect("/customer");
-	}
-
-	public function apply($id=0){
-		$arr["where"]["id<>"] = $id;
-		if(!$this->_getProtectNumberCheck($arr)){
-			$this->session->set_flashdata('message', '<font color="red">保护客户数量己达到限制数量,不能继续保护!</font>');
-		}
-		else{
-			$data["c_status"] = 0;
-			if($this->customer_model->edit($id, $data))
-				$this->session->set_flashdata('message', '<font color="red">申请保护客户成功!</font>');
-			else
-				$this->session->set_flashdata('message', '<font color="red">申请保护客户失败!</font>');
-		}
-		redirect("/customer");
-	}
-
-	public function county($path=33){
-		$data = $this->system_zones;
-
-		$county = array(
-				"" => "所有县区",
-			);
-		foreach ($data as $key => $value) {
-			if(strlen($key)==6 && substr($key, 0, 4)==$path)
-				$county[$key] = $value;
-		}
-		echo json_encode($county);
-		exit ;
-	}
-
-	private function _getCity($path=33){
-		$data = $this->system_zones;
-		$city = array(
-				$path => "所有城市",
-			);
-		foreach ($data as $key => $value) {
-			if(strlen($key)==4)
-				$city[$key] = $value;
-		}
-		return $city;
-	}
-
-	private function _getCounty($path=33){
-		$data = $this->system_zones;
-
-		$county = array(
-				"" => "所有县区",
-			);
-		foreach ($data as $key => $value) {
-			if(strlen($key)==6)
-				$county[$key] = $value;
-		}
-		return $county;
-	}
-
-
-	private function _getProtectNumberCheck($arr=array()){
-		$arr["where_in"]["c_status"] = array(0, 1, 4);
-		$arr["where"]["c_add_userid"] = $this->session->userdata("id");
-
-		$number = $this->customer_model->get_count($arr);
-		if((int)$number<(int)$this->session->userdata("c_num"))
-			return TRUE;
-		else
-			return FALSE;
 	}
 }
 
