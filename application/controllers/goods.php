@@ -21,14 +21,22 @@ class goods extends MY_Controller {
 		parent::__construct();
 		$this->load->library('session');
 		$this->load->model("goods_model");
+		$this->load->model("goods_log_model");
+		$this->load->model("goods_log_detail_model");
 		$this->load->model("customer_model");
 		$this->load->helper('url');
 		$this->load->helper('form');
 
-		$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
+		if($_SERVER['QUERY_STRING']){
+		    $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
+		}
+		else{
+		    $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+		}
 		$url = base64_encode($url);
 		if(!$this->session->userdata("islogin"))
 			redirect("/login?from_url=${url}");
+		define("CONTROLLER", "goods");
 	}
 
 	public function index($page=1)
@@ -238,8 +246,68 @@ class goods extends MY_Controller {
 			$this->sendSuccess();
 		}
 		else{
-			$this->sendError('修改货物失败');
+			$this->sendError('删除货物失败');
 		}
+	}
+    
+	public function account($c_id){
+		$cart= $this->session->userdata($c_id);
+		$data['customer'] = $customer = $this->customer_model->get_info(array("where"=>array("id"=>$c_id)));
+		$data['list'] = $cart;
+
+		if($cart){
+		    // 验证库存
+		    $remain = array();
+		    foreach($cart ?:array() as $item){
+			$arr = array();
+			$arr['where']['id'] = $item['id'];
+			$goods = $this->goods_model->get_info($arr);
+			if($goods->quantity < $item['quantity']){
+			    $this->sendError($goods->name.'库存不足');
+			}
+			$remain[$item['id']] = ($goods->quantity*100 - $item['quantity']*100)/100;
+		    }
+		    $log = array();
+		    $log['c_id'] = $c_id;
+		    $log['c_name'] = $customer->c_name;
+		    $log['createtime'] = date('Y-m-d H:i:s');
+		    $l_id = $this->goods_log_model->add($log);
+		    
+		    $total_money = 0;
+		    foreach($cart ?:array() as $item){
+			$log_detail = array();
+			$log_detail['l_id'] = $l_id;
+			$log_detail['g_id'] = $item['id'];
+			$log_detail['g_name'] = $item['name'];
+			$log_detail['price'] = $item['price'];
+			$log_detail['quantity'] = $item['quantity'];
+			$this->goods_log_detail_model->add($log_detail);
+			$goods = $this->goods_model->get_info($arr);
+			$total_money = ($total_money*100 + $item['price']*$item['quantity']*100)/100;
+			
+			$data = array();
+			$data['quantity'] = $remain[$item['id']];
+			$this->goods_model->edit($item['id'],$data);
+		    }
+		    $log = array();
+		    $log['total_money'] = $total_money;
+		    $this->goods_log_model->edit($l_id, $log);
+		    $this->session->unset_userdata($c_id);
+		}
+		else{	
+		    $this->sendError("未添加货物到清单");
+		}
+		$this->sendSuccess($l_id);
+		// redirect("/goods/deal/".$l_id);
+	}
+	
+	public function deal($id = ''){
+		$data['log'] = $log = $this->goods_log_model->get_info(array("where"=>array("id"=>$id)));
+		$data['customer'] = $this->customer_model->get_info(array("where"=>array("id"=>$log->c_id)));
+		$data['list'] = $list = $this->goods_log_detail_model->get_list(array("where"=>array("l_id"=>$id)));
+		
+		$content = $this->load->view("goods/account", $data, true);
+		$this->show_iframe($content);
 	}
 }
 

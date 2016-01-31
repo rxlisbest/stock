@@ -24,8 +24,16 @@ class profile extends MY_Controller {
 		$this->load->helper('url');
 		$this->load->helper('form');
 		$this->load->helper('password');
+		if($_SERVER['QUERY_STRING']){
+		    $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
+		}
+		else{
+		    $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+		}
+		$url = base64_encode($url);
 		if(!$this->session->userdata("islogin"))
-			redirect("/login");
+			redirect("/login?from_url=${url}");
+		define("CONTROLLER", "profile");
 	}
 
 	public function index()

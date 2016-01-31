@@ -56,7 +56,7 @@
 			<input type="hidden" value="<?php echo $item->id;?>" />
 			
 			<div class="btn-group">
-			    <button class="btn btn-primary bottom-margin" type="button">
+			    <button class="btn btn-primary bottom-margin add" type="button">
 				添加
 			    </button>
 			</div>
@@ -81,20 +81,23 @@
           <a class="fs1" aria-hidden="true" data-icon="&#xe090;"></a>
         </span>
       </div>
-      <div class="widget-body">
+      <div class="widget-body" id="cart">
 	<table class="table table-condensed table-striped table-bordered table-hover no-margin">
 	    <thead>
 		<tr>
 		    <th style="width:30%">
 			货物名称
 		    </th>
-		    <th style="width:25%" class="hidden-phone">
+		    <th style="width:20%">
 			单价（元/斤）
 		    </th>
-		    <th style="width:25%" class="hidden-phone">
+		    <th style="width:20%">
 			出库（斤）
 		    </th>
-		    <th style="width:10%">
+		    <th style="width:20%">
+			小记（元）
+		    </th>
+		    <th style="width:10%" class="hidden-phone">
 			操作
 		    </th>
 		</tr>
@@ -107,14 +110,19 @@
 			    <?php echo $item['name']; ?>
 			</span>
 		    </td>
-		    <td class="hidden-phone">
+		    <td>
 			<?php echo $item['price']; ?>
 		    </td>
 
-		    <td class="hidden-phone">
+		    <td>
 			<?php echo $item['quantity']; ?>
 		    </td>
+
 		    <td>
+			<?php echo sprintf("%.2f", $item['quantity']*$item['price']); ?>
+		    </td>
+
+		    <td class="hidden-phone">
 			<a onclick="del(<?php echo $key; ?>)">
 			  <i class="icon-trash">
 			  </i>
@@ -123,7 +131,7 @@
 		</tr>
 		<?php endforeach; ?>
 		<tr>
-		    <td colspan="4">
+		    <td colspan="5">
 			<h4 class="pull-right">总计：<?php echo $total_money; ?>元</h4>
 		    </td>
 		</tr>
@@ -139,14 +147,12 @@
 <!-- 右侧内容 -->
 <div class="right-sidebar"><!-- Right sidebar starts here -->
   <div class="wrapper">
-    <a href="/customer">
-      <button class="btn btn-large btn-success btn-block" type="button">客户列表</button>
-    </a>
+	<button onclick="account()" class="btn btn-large btn-warning2 btn-block" type="button">结算</button>
   </div>
 </div><!-- Right sidebar ends here -->
 
 <script type="text/javascript">
-    $(".btn-primary").click(function(){
+    $(".add").click(function(){
 	loading();
 	var id = $(this).parent().parent().find("input").val();
 	var name = $(this).parent().parent().prev().prev().prev().prev().find("input").val();
@@ -202,6 +208,32 @@
 		else{
 			// window.location.href = "/goods";
 			window.location.reload();
+		}
+	    },
+	    error: function(){
+		loaded();
+		$().toastmessage('showErrorToast', "网络错误");
+	    }
+	});
+    }
+
+    function account(id){
+	loading();
+	$.ajax({
+	    type: "POST",
+	    url: "/goods/account/<?php echo $customer->id;?>",
+	    data: {id:id},
+	    dataType: "json",
+	    success: function(data){
+		if(data.code == 300){
+			loaded();
+			$().toastmessage('showErrorToast', data.msg);
+			// TINY.box.show({html:data.msg,animate:false,close:false,boxid:'error',top:5});
+			// gDialog.error('提示信息', data.errormsg);
+		}
+		else{
+			window.location.href = "/goods/deal/"+data.msg;
+			// window.location.reload();
 		}
 	    },
 	    error: function(){

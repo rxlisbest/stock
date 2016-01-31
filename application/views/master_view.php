@@ -24,7 +24,7 @@
 	<head>
 	<meta charset="utf-8">
 	<title>
-		先行科技-代理商客户管理系统
+		1024工作室-库存管理系统
 	</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
@@ -45,6 +45,7 @@
 	
 	<link href="/public/resources/css/jquery.toastmessage.css" rel="stylesheet">
 	<script src="/public/js/jquery-1.7.2.min.js"></script>
+	<script src="/public/js/jquery.jqprint-0.3.js"></script>
 	
 	</head>
 	<body>
@@ -158,20 +159,20 @@
 				</a>
 			</li> -->
 			<li>
-				<a href="/customer">
-					<div class="fs1" aria-hidden="true" data-icon="&#xe0a9;"></div>
+				<a href="/customer"<?php if(CONTROLLER == 'customer'):?> class="selected"<?php endif; ?>>
+					<div class="fs1" aria-hidden="true" data-icon=""></div>
 					客户
 				</a>
 			</li>
 			<li>
-				<a href="/goods" >
-					<div class="fs1" aria-hidden="true" data-icon="&#xe0b8;"></div>
+				<a href="/goods"<?php if(CONTROLLER == 'goods'):?> class="selected"<?php endif; ?>>
+					<div class="fs1" aria-hidden="true" data-icon=""></div>
 					库存
 				</a>
 			</li>
 			<li>
-				<a href="/profile" >
-					<div class="fs1" aria-hidden="true" data-icon="&#xe0b8;"></div>
+				<a href="/profile"<?php if(CONTROLLER == 'profile'):?> class="selected"<?php endif; ?>>
+					<div class="fs1" aria-hidden="true" data-icon=""></div>
 					用户
 				</a>
 			</li>
@@ -200,7 +201,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="edit-profile.html" class="selected">
+				<a href="edit-profile.html">
 				<div class="fs1" aria-hidden="true" data-icon="&#xe0aa;"></div>
 				Extras
 				</a>
@@ -213,7 +214,6 @@
 
 		<div class="sub-nav"><!-- This is sub navigation -->
 			<ul>
-			<li><a href="/customer/add" class="">添加客户</a></li>
 			<!-- <li>
 				<a href="#" >
 				Link
@@ -349,10 +349,9 @@
 
 	<footer><!--    Footer starts here    -->
 		<p>
-		Copyright © 2014    先行科技
+		Copyright © 2014   1024工作室 
 		</p>
 	</footer><!--    Footer ends here    -->
-	<script src="/public/js/jquery.min.js"></script>
 	<script src="/public/js/bootstrap.js"></script>
 	<script src="/public/js/jquery.scrollUp.js"></script>
 	<script src="/public/js/jquery.dataTables.js"></script>
@@ -378,7 +377,7 @@
 			animation: 'fade', // Fade, slide, none
 			animationInSpeed: 400, // Animation in speed (ms)
 			animationOutSpeed: 400, // Animation out speed (ms)
-			scrollText: 'Scroll to top', // Text for element
+			scrollText: '回到顶部', // Text for element
 			activeOverlay: false, // Set CSS color to display scrollUp active point, e.g '#00FFFF'
 		});
 		});

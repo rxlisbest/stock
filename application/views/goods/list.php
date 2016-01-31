@@ -50,9 +50,6 @@
             <table class="table table-condensed table-striped table-bordered table-hover no-margin">
                 <thead>
                     <tr>
-                        <th style="width:5%">
-                            <input type="checkbox" class="no-margin" />
-                        </th>
                         <th style="width:30%">
                             货物名称
                         </th>
@@ -70,9 +67,6 @@
                 <tbody>
                     <?php foreach ($goods as $item): ?>
                     <tr>
-                        <td>
-                            <input type="checkbox" class="no-margin" />
-                        </td>
                         <td>
                             <a href="/goods/detail/<?php echo $item->id; ?>">
                                 <span class="name">

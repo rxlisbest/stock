@@ -144,7 +144,7 @@
 <div class="right-sidebar"><!-- Right sidebar starts here -->
 	<div class="wrapper">
 		<a href="/customer">
-			<button class="btn btn-large btn-success btn-block" type="button">客户列表</button>
+			<button class="btn btn-large btn-info btn-block" type="button">客户列表</button>
 		</a>
 	</div>
 </div><!-- Right sidebar ends here -->

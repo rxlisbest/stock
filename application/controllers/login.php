@@ -21,6 +21,7 @@ class login extends MY_Controller {
 		parent::__construct();
 		$this->load->helper('url');
 		$this->load->library('session');
+		define("CONTROLLER", "");
 	}
 
 	public function index()

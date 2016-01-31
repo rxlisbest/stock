@@ -21,10 +21,18 @@ class customer extends MY_Controller {
 		parent::__construct();
 		$this->load->library('session');
 		$this->load->model("customer_model");
+		$this->load->model("goods_log_model");
+		$this->load->model("goods_log_detail_model");
 		$this->load->helper('url');
 		$this->load->helper('form');
 
-		$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
+		if($_SERVER['QUERY_STRING']){
+		    $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
+		}
+		else{
+		    $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+		}
+		define("CONTROLLER", "customer");
 		$url = base64_encode($url);
 		if(!$this->session->userdata("islogin"))
 			redirect("/login?from_url=${url}");
@@ -114,31 +122,31 @@ class customer extends MY_Controller {
 	}
 
 	public function detail($id=0){
-		$data["customer_trades"] = $this->system_trades;
-		$data["customer_zones"] = $this->system_zones;
-		$data["city"] = $this->_getCity();
-		$data["county"] = $this->_getCounty();
-
-		$data["customers_config"] = $this->config->item("customers");
 		$data["customer"] = $this->customer_model->get_info(array("where"=>array("id"=>$id)));
-		$data["message"] = $this->session->flashdata('message') ?: "";
+		$arr = array();
+		$arr['where']['c_id'] = $id;
+		$arr['order']['id'] = 'desc';
+		$log_list = $this->goods_log_model->get_list($arr);
+		$list = array();
+		foreach($log_list as $item){
+		    $arr = array();
+		    $arr['where']['l_id'] = $item->id;
+		    $log_detail_list = $this->goods_log_detail_model->get_list($arr);
+		    $item->list = $log_detail_list;
+		    $list[] = $item;
+		}
+		$data['list'] = $list;
 		$content = $this->load->view("customer/customer_detail_view", $data, true);
 		$this->show_iframe($content);
 	}
 
-	public function delete($id){
-		$arr["c_status"] = 3;
-
-		$data["customer"] = $customer = $this->customer_model->get_info(array("where"=>array("id"=>$id)));
-		if($customer->c_status!=5){
-			$this->session->set_flashdata('message', '<font color="red">删除失败,只能删除未保护客户!</font>');
-			redirect("/customer");
+	public function del($id){
+		if($this->customer_model->delete($id)){
+			$this->sendSuccess();
 		}
-		if($this->customer_model->edit($id, $arr))
-			$this->session->set_flashdata('message', '<font color="red">删除客户成功!</font>');
-		else
-			$this->session->set_flashdata('message', '<font color="red">删除客户失败!</font>');
-		redirect("/customer");
+		else{
+			$this->sendError('删除客户失败');
+		}
 	}
 }
 

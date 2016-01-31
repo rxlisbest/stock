@@ -16,7 +16,7 @@
           <?php echo form_open('/customer', array('class'=>'form-horizontal no-margin', 'method'=>'get')); ?>
                     
               客户名称:
-              <?php echo form_input(array('name'=>'c_name', 'value'=>isset($search["c_name"])? $search["c_name"]: "", 'class'=>'span3', 'type'=>'text', 'placeholder'=>'公司名称')); ?>
+              <?php echo form_input(array('name'=>'c_name', 'value'=>isset($search["c_name"])? $search["c_name"]: "", 'class'=>'span3', 'type'=>'text', 'placeholder'=>'客户名称')); ?>
               <button type="submit" class="btn btn-info">
                 查询
               </button>
@@ -43,9 +43,6 @@
       <table class="table table-condensed table-striped table-bordered table-hover no-margin">
         <thead>
           <tr>
-            <th style="width:5%">
-              <input type="checkbox" class="no-margin" />
-            </th>
             <th style="width:30%">
               客户名称
             </th>
@@ -63,9 +60,6 @@
         <tbody>
           <?php foreach ($customers as $customer): ?>
           <tr>
-            <td>
-              <input type="checkbox" class="no-margin" />
-            </td>
             <td>
               <a href="/customer/detail/<?php echo $customer->id; ?>">
                 <span class="name">
@@ -90,7 +84,7 @@
                 <ul class="dropdown-menu">
                   <li>
                     <a href="/customer/detail/<?php echo $customer->id; ?>">
-                      客户详情
+                      购买记录 
                     </a>
                   </li>
                   <li>
@@ -99,7 +93,7 @@
                     </a>
                   </li>
                   <li>
-                    <a href="/customer/delete/<?php echo $customer->id; ?>" onclick="javascript:return p_del()">
+                    <a onclick="javascript:return p_del(<?php echo $customer->id; ?>)">
                       删除客户
                     </a>
                   </li>
@@ -118,12 +112,35 @@
       </table>
 
         <SCRIPT LANGUAGE=javascript>   
-          function p_del() {   
+          function p_del(id) {   
             var msg = "确认要删除此客户吗?";   
             if (confirm(msg)==true){   
-              return true;   
+		loading();
+		$.ajax({
+		    type: "GET",
+		    url: "/customer/del/" + id,
+		    // data: {id:id},
+		    dataType: "json",
+		    success: function(data){
+			if(data.code == 300){
+				loaded();
+				$().toastmessage('showErrorToast', data.msg);
+				// TINY.box.show({html:data.msg,animate:false,close:false,boxid:'error',top:5});
+				// gDialog.error('提示信息', data.errormsg);
+			}
+			else{
+				// window.location.href = "/goods";
+				window.location.reload();
+			}
+		    },
+		    error: function(){
+			loaded();
+			$().toastmessage('showErrorToast', "网络错误");
+		    }
+		});
+		return false;     
             }else{   
-              return false;   
+		return false;   
             }   
           }   
           function p_can() {   
