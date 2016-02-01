@@ -91,7 +91,7 @@ class goods extends MY_Controller {
 		}
 
 		$arr = array();
-		$arr["where"]["name"] = trim($post["name"]); 
+		$arr["where"]["name"] = "'".trim($post["name"])."'"; 
 		$goods_count = $this->goods_model->get_count($arr);
 		if($goods_count > 0){
 			$this->sendError('已存在这种货物,请不要重复添加!');
@@ -281,6 +281,7 @@ class goods extends MY_Controller {
 			$log_detail['g_name'] = $item['name'];
 			$log_detail['price'] = $item['price'];
 			$log_detail['quantity'] = $item['quantity'];
+			$log_detail['outdate'] = date('Y-m-d');
 			$this->goods_log_detail_model->add($log_detail);
 			$goods = $this->goods_model->get_info($arr);
 			$total_money = ($total_money*100 + $item['price']*$item['quantity']*100)/100;
@@ -307,6 +308,45 @@ class goods extends MY_Controller {
 		$data['list'] = $list = $this->goods_log_detail_model->get_list(array("where"=>array("l_id"=>$id)));
 		
 		$content = $this->load->view("goods/account", $data, true);
+		$this->show_iframe($content);
+	}
+
+	public function detail($id = ''){
+		$get = $this->input->get();
+		$page = $get['page'];
+		if(!$page){
+		    $page = 0;
+		}
+		$data['next_page'] = $page - 1;
+		$data['pre_page'] = $page + 1;
+		$date = date('Y-m', strtotime("-${page} months"));
+		$d = date('t', strtotime($date));
+		$arr = array();
+		$arr['where']['id'] = $id;
+		$data['goods'] = $this->goods_model->get_info($arr);
+
+		$arr = array();
+		$arr['select'] = "sum(quantity) as quantity,outdate";
+		$arr['where']['g_id'] = $id;
+		$arr['where']['date_format(outdate,"%Y-%m")'] = "'${date}'";
+		$arr['group'] = array('outdate');
+		$result = $this->goods_log_detail_model->get_list($arr);
+		// var_dump($result);exit;
+		$list = array();
+		for($i=1;$i<=$d;$i++){
+		    if($i<10){
+			$key = $date.'-0'.$i;
+		    }
+		    else{
+			$key = $date.'-'.$i;
+		    }
+		    $list[$key] = 0;
+		}
+		foreach($result ?: array() as $item){
+		    $list[$item->outdate] = $item->quantity;
+		}
+		$data['list'] = $list;
+		$content = $this->load->view("goods/detail", $data, true);
 		$this->show_iframe($content);
 	}
 }

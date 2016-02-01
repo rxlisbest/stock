@@ -93,7 +93,7 @@
                                 <ul class="dropdown-menu">
                                     <li>
                                         <a href="/goods/detail/<?php echo $item->id; ?>">
-                                            货物详情
+                                            出库统计 
                                         </a>
                                     </li>
 

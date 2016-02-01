@@ -13,12 +13,16 @@ class goods_log_detail_model extends CI_model {
 	public function get_list($arr=array())
 	{
 		$this->db->from($this->tablename);
+		if(isset($arr["select"]))
+			$this->db->select($arr["select"], "", FALSE);
 		if(isset($arr["where"]))
 			$this->db->where($arr["where"], "", FALSE);
 		if(isset($arr["like"]))
 			$this->db->like($arr["like"], "", FALSE);
 		if(isset($arr["limit"]) && isset($arr["offset"]))
 			$this->db->limit($arr["limit"], $arr['offset']);
+		if(isset($arr["group"]))
+			$this->db->group_by($arr["group"]);
 		$query = $this->db->get();
 		$data = $query->result();
 		$query->free_result();
